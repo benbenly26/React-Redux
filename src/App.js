@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import "./App.css";
+import { todoData } from "./store/todo/todoSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-function App() {
+export default function App() {
+  const { dataVal, isLoading, error } = useSelector((state) => state.todo);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(todoData());
+  }, [dispatch]);
+
+  if (error) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <p style={{ color: "red" }}>Error fetching todos!</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="App">
+        <h2 style={{ color: "blue" }}>Redux</h2>
+        {isLoading ? (
+          <h1>Loading...</h1>
+        ) : (
+          dataVal.map((todo) => <p key={todo.id}>{todo.title}</p>)
+        )}
+      </div>
+    </>
   );
 }
-
-export default App;
